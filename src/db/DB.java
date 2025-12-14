@@ -49,10 +49,10 @@ public class DB {
         }
     }
 
-    public static void closePreparedStatement (PreparedStatement ps) {
-        if (ps != null) {
+    public static void closeResultSet (ResultSet rs) {
+        if (rs != null) {
             try {
-                ps.close();
+                rs.close();
             }
             catch (SQLException e) {
                 throw new DbException(e.getMessage());
@@ -60,10 +60,10 @@ public class DB {
         }
     }
 
-    public static void closeResultSet (ResultSet rs) {
-        if (rs != null) {
+    public static void closePreparedStatement (PreparedStatement ps) {
+        if (ps != null) {
             try {
-                rs.close();
+                ps.close();
             }
             catch (SQLException e) {
                 throw new DbException(e.getMessage());
