@@ -1,38 +1,54 @@
 package application;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.sql.Statement;
+
 import db.DB;
+import db.DbException;
+import db.DbIntegrityException;
 
 public class App {
     public static void main(String[] args) throws Exception {
         
         Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        Statement st = null;
 
         try {
-            conn = new DB().getConnection();
-            
-            ps = conn.prepareStatement("SELECT * FROM DEPARTMENT");
-            
-            rs = ps.executeQuery();
-            while(rs.next()) {
-                System.out.println(
-                    "ID: " + rs.getInt("ID")
-                    + ", Name: " + rs.getString("NAME")
+            conn = DB.getConnection();
+
+            conn.setAutoCommit(false);
+
+            st = conn.createStatement();
+
+            int rows1 = st.executeUpdate(
+                    "UPDATE seller " +
+                    "SET BaseSalary = 2090 " +
+                    "WHERE DepartmentId = 1"
                 );
-            }
+
+            int rows2 = st.executeUpdate(
+                    "UPDATE seller " +
+                    "SET BaseSalary = 3090 " +
+                    "WHERE DepartmentId = 2"
+                );
+
+                System.out.println("Rows1 = " + rows1);
+                System.out.println("Rows2 = " + rows2);
+
+                conn.commit();
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            try {
+                conn.rollback();
+                throw new DbException("Transaction rolled back! Caused by: " + e.getMessage());
+            }
+            catch (SQLException el) {
+                throw new DbException("Error trying to roolback! Caused by: " + el.getMessage());
+            }
         }
         finally {
-            DB.closeResultSet(rs);
-            DB.closePreparedStatement(ps);
             DB.closeConnection();
         }
     }

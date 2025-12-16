@@ -13,7 +13,7 @@ public class DB {
 
     private static Connection conn = null;
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         if (conn == null) {
             try {
                 Properties props = loadProperties();
@@ -38,7 +38,7 @@ public class DB {
         }
     }
 
-    public Properties loadProperties() {
+    public static Properties loadProperties() {
         try (FileInputStream fs = new FileInputStream("jdbc\\db.properties")) {
             Properties props = new Properties();
             props.load(fs);
